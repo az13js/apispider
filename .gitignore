@@ -1,2 +1,5 @@
 #
+data.json
+scrapy.log
+codes.csv
 __pycache__

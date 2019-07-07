@@ -7,15 +7,16 @@ class ApispiderSpider(scrapy.Spider):
     name = 'apispider'
 
     def start_requests(self):
-        # 测试，先写死，请求2次看看
-        url = 'http://www.szse.cn/api/market/ssjjhq/getTimeData?marketId=1&code=000008'
-        for i in range(2):
-            yield scrapy.Request(url = url + '&random=' + str(random.randint(1,50)), callback = self.parse)
+        # 股票代码列表
+        codes = ['000788', '000008']
+        url = 'http://www.szse.cn/api/market/ssjjhq/getTimeData?marketId=1'
+        for code in codes:
+            self.log('Request:' + code)
+            yield scrapy.Request(url = url + '&random=' + str(random.randint(1,50)) + '&code=' + code, callback = self.parse)
 
     def parse(self, response):
         data = json.loads(response.body)
         if '0' == data['code']:
-            self.log('price:' + data['data']['now'])
             yield {
                 'datetime': data['datetime'],
                 'code': data['data']['code'],
