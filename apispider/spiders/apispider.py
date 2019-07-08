@@ -2,17 +2,17 @@
 import json
 import random
 import scrapy
+import csv
 
 class ApispiderSpider(scrapy.Spider):
     name = 'apispider'
 
     def start_requests(self):
-        # 股票代码列表
-        codes = ['000788', '000008']
         url = 'http://www.szse.cn/api/market/ssjjhq/getTimeData?marketId=1'
-        for code in codes:
-            self.log('Request:' + code)
-            yield scrapy.Request(url = url + '&random=' + str(random.randint(1,50)) + '&code=' + code, callback = self.parse)
+        with open('codes.csv') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                yield scrapy.Request(url = url + '&random=' + str(random.randint(1,50)) + '&code=' + row[0], callback = self.parse)
 
     def parse(self, response):
         data = json.loads(response.body)
